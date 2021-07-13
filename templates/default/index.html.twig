@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{'Formadytho'|trans}}{% endblock %}
+
+{% block body %}
+
+    <div class="text-center">
+
+        {% if app.request.get('training') %}
+            <div class="text-center mx-auto alert alert-danger alert-dismissable fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+                {% if app.request.get('training') == 'fail-data' %}
+                    <h5>{{'There was a problem with the csv file'|trans}}</h5>
+                {% elseif app.request.get('training') == 'fail-file' %}
+                    <h5>{{'The uploaded file is not a csv'|trans}}</h5>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <h2 class="card-title">{{'F.C. Pro training management software'|trans}}</h2>
+        <h5 class="card-title text-center font-italic">{{'Import a new .csv file to get started'|trans}}
+            <i class="fas fa-question-circle fa-sm ml-2" data-toggle="tooltip" data-placement="bottom" title="{{'Remember to add goals first'|trans}}"></i>
+        </h5>
+
+        {{ form_start(form) }}
+
+            {{ form_widget(form.file_name, {'attr': {'class': 'mb-4'}}) }}
+
+            {{ form_widget(form.submit, {'attr': {'class': 'rad-rounded-xs btn-lg btn-primary px-5 my-5'}}) }}
+            {{ form_errors(form) }}
+            {{ form_errors(form.file_name) }}
+
+            {{ form_rest(form) }}
+                
+        {{ form_end(form) }}
+
+        <div class="row mt-5">
+            <div class="col">
+                <h1 class='stats-nb'>{{ trainings_nb|length }}</h1>
+                <h4>{{'Trainings'|trans}}</h4>
+                <h4>{{'recorded'|trans}}</h4>
+            </div>
+
+            <div class="col">
+                <h1 class='stats-nb'>{{ trainees|length }}</h1>
+                <h4>{{'Trainees'|trans}}</h4>
+                <h4>{{'registered'|trans}}</h4>
+            </div>
+
+            <div class="col">
+                <h1 class='stats-nb'>{{ companies|length }}</h1>
+                <h4>{{'Companies'|trans}}</h4>
+                <h4>{{'registered'|trans}}</h4>         
+            </div>
+        </div>
+    </div>
+    
+    <div class="text-center fixed-bottom">
+        <h5 class="h5 font-weight-normal">©{{ "now"|date("Y") }} - Formadytho</h5>
+    </div>
+
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+
+        $('#upload_file_name').on('change',function(){
+            var fileName = $(this).val();
+            $(this).next('.custom-file-label').html(fileName);
+        })
+    </script>
+
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{'Training index'|trans}}{% endblock %}
+
+{% block body %}
+
+    <h1 class='text-center mb-3'>{{'Training list'|trans}}</h1>
+
+    <div class="row text-center tab-header">
+        <div class="col-6 tab-cell-header px-2 py-2">
+            {{'Title'|trans}}
+        </div>
+        <div class="col-2 tab-cell-header px-2 py-2">
+            {{'Platform'|trans}}
+        </div>
+        <div class="col-3 tab-cell-header px-2 py-2">
+            {{'Reference number'|trans}}
+        </div>
+        <div class="col-1 tab-cell-header px-2 py-2">
+            {{'Goal'|trans}}
+        </div>
+    </div>
+    {% for training in trainings | sortByField('title','desc') %}
+        <a href="{{ path('training_show', {'id': training.id}) }}" class="link-unstyled">
+            <div class="row text-center tab-row link-style-disabled">
+                <div class="col-6 tab-cell px-2 py-2">
+                    {{ training.title }}
+                </div>
+                <div class="col-2 tab-cell px-2 py-2">
+                    {{ training.platform }}
+                </div>
+                <div class="col-3 tab-cell px-2 py-2">
+                    {{ training.referenceNumber }}
+                </div>
+                <div class="col-1 tab-cell px-2 py-2">
+                    {{ training.goals|length }}
+                </div>
+            </div>
+        </a>
+    {% else %}
+        <div class='row justify-content-center mt-2'>
+            <div class='col text-center'>
+                <div class="alert alert-danger">{{'No entry found'|trans}}</div>
+            </div>
+        </div>
+    {% endfor %}
+
+{% endblock %}

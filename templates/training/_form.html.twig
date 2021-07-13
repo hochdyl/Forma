@@ -1,0 +1,30 @@
+{{ form_start(form) }}
+    <h5>{{'Title'|trans}}</h5>
+    {{ form_errors(form.title) }}
+    {{ form_widget(form.title, {'attr': {'class': 'mb-3'}}) }}
+
+    <h5>{{'Platform'|trans}}</h5>
+    {{ form_errors(form.platform) }}
+    {{ form_widget(form.platform, {'attr': {'class': 'mb-3'}}) }}
+
+    <h5>{{'Reference number'|trans}}</h5>
+    {{ form_errors(form.reference_number) }}
+    {{ form_widget(form.reference_number, {'attr': {'class': 'mb-3'}}) }}
+
+    
+    <h5>{{'Goals'|trans}}
+        {% if app.request.get('source') == 'session' %}
+            <a href="{{ path('goal_new', {'source': 'training', 'id': training.id, 'id_session': app.request.get('id_session')} )}}"><i class="fas fa-plus-circle"></i></a>
+        {% else %}
+            <a href="{{ path('goal_new', {'source': 'training', 'id': training.id})}}"><i class="fas fa-plus-circle"></i></a>
+        {% endif %}
+    </h5> 
+    {{ form_errors(form.goals) }}
+    {{ form_widget(form.goals, {'attr': {'class': 'mb-5'}}) }}
+
+    <div class='row justify-content-center'>
+        <div class='col text-center'>
+            <button class="btn btn-lg btn-primary rad-rounded-xs px-5">{{ button_label|default('Save'|trans) }}</button>
+        </div>
+    </div>
+{{ form_end(form) }}

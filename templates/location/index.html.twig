@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{'Location index'|trans}}{% endblock %}
+
+{% block body %}
+
+    {% if app.request.get('new') == 'success' %}
+        <div class="text-center mx-auto alert alert-success alert-dismissable fade show" role="alert">
+            <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+            </button>
+
+            <h5>{{'Location successfuly added'|trans}}</h5>
+        </div>
+    {% endif %}
+
+    <div class='row justify-content-center mb-3'>
+        <div class='col text-center'>
+            <a href="{{ path('location_new') }} "><button class="btn btn-lg btn-no-bg hover-pr rad-rounded-xs px-5">{{'New location'|trans}}</button></a>
+        </div>
+    </div>
+
+    <h1 class='text-center mb-3'>{{'Location list'|trans}}</h1>
+
+    <div class="row text-center tab-header">
+        <div class="col-3 tab-cell-header px-2 py-2">
+            {{'Name'|trans}}
+        </div>
+        <div class="col-4 tab-cell-header px-2 py-2">
+            {{'Street'|trans}}
+        </div>
+        <div class="col-2 tab-cell-header px-2 py-2">
+            {{'Postal code'|trans}}
+        </div>
+        <div class="col-3 tab-cell-header px-2 py-2">
+            {{'City'|trans}}
+        </div>
+    </div>
+    {% for location in locations | sortByField('name','asc') %}
+        <a href="{{ path('location_show', {'id': location.id}) }}" class="link-unstyled">
+            <div class="row text-center tab-row link-style-disabled">
+                <div class="col-3 tab-cell px-2 py-2">
+                    {{ location.name }}
+                </div>
+                <div class="col-4 tab-cell px-2 py-2">
+                    {{ location.street }}
+                </div>
+                <div class="col-2 tab-cell px-2 py-2">
+                    {{ location.postalCode }}
+                </div>
+                <div class="col-3 tab-cell px-2 py-2">
+                    {{ location.city }}
+                </div>
+            </div>
+        </a>
+    {% else %}
+        <div class='row justify-content-center mt-2'>
+            <div class='col text-center'>
+                <div class="alert alert-danger">{{'No entry found'|trans}}</div>
+            </div>
+        </div>
+    {% endfor %}
+
+{% endblock %}

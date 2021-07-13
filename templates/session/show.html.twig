@@ -1,0 +1,237 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{'Session'|trans}}{% endblock %}
+
+{% block body %}
+
+    {% if (app.request.get('errors')) or (app.request.get('location_name')) or (app.request.get('location_pc') or (app.request.get('location_street')) or (app.request.get('location_city'))) %}
+        <div class="text-center mx-auto mb-5 alert alert-danger alert-dismissable fade show" role="alert">
+            <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+            </button>
+
+            {% for error in app.request.get('errors') %}
+                {% if error == 'training_title' %}
+                    <h5>{{'Please enter a training title'|trans}}</h5>
+                    {{ form_start(training.form) }}
+
+                    <h5>{{'Reference number'|trans}}</h5>
+                    {{ form_errors(training.form.reference_number) }}
+                    {{ form_widget(training.form.reference_number, {'attr': {'class': 'mb-3'}}) }}
+
+                    <div class='row justify-content-center'>
+                        <div class='col text-center'>
+                            <button class="btn btn-lg btn-primary rad-rounded-xs px-5">{{ button_label|default('Save'|trans) }}</button>
+                        </div>
+                    </div>
+                    {{ form_end(training.form) }}
+
+                {% endif %}
+                {% if error == 'training_ref_number' %}
+                    <h5>{{'Please enter a training reference number'|trans}}</h5>
+                {% endif %}
+                {% if error == 'training_goals' %}
+                    <h5>{{'Please enter at least one goal for this training'|trans}}</h5>
+                {% endif %}
+            {% endfor %}
+
+            {% if app.request.get('location_name') %}
+                {% for session_date in app.request.get('location_name') %}
+                    <h5>{{'Please enter a location name for this session :'|trans}} {{ session_date }}</h5>
+                {% endfor %}
+            {% endif %}   
+
+            {% if app.request.get('location_pc') %}
+                {% for session_date in app.request.get('location_pc') %}
+                    <h5>{{'Please enter a location postal code for this session :'|trans}} {{ session_date }}</h5>
+                {% endfor %}
+            {% endif %}     
+
+            {% if app.request.get('location_street') %}
+                {% for session_date in app.request.get('location_street') %}
+                    <h5>{{'Please enter a location street for this session :'|trans}} {{ session_date }}</h5>
+                {% endfor %}
+            {% endif %}  
+
+            {% if app.request.get('location_city') %}
+                {% for session_date in app.request.get('location_city') %}
+                    <h5>{{'Please enter a city name for this session :'|trans}} {{ session_date }}</h5>
+                {% endfor %}
+            {% endif %}   
+        </div>
+    {% endif %}
+
+    {% if app.request.get('location') == 'success' %}
+        <div class="text-center mx-auto alert alert-success alert-dismissable fade show" role="alert">
+            <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+            </button>
+
+            <h5>{{'Location successfuly updated'|trans}}</h5>
+        </div>
+    {% endif %}
+    {% if app.request.get('training') == 'success' %}
+        <div class="text-center mx-auto alert alert-success alert-dismissable fade show" role="alert">
+            <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+            </button>
+
+            <h5>{{'Training successfuly updated'|trans}}</h5>
+        </div>
+    {% endif %}
+    {% if app.request.get('update') == 'success' %}
+        <div class="text-center mx-auto alert alert-success alert-dismissable fade show" role="alert">
+            <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+            </button>
+
+            <h5>{{'Session successfuly updated'|trans}}</h5>
+        </div>
+    {% endif %}
+
+    <a href="{{ path('session_index') }}"><i class="fas fa-chevron-left h1 back-btn"></i></a>
+    
+    <div class='row justify-content-center mb-5'>
+        <div class='col text-center'>
+            <a href="{{ path('session_edit', {'id': session.id}) }}"><button class="btn btn-lg btn-no-bg hover-pr rad-rounded-xs px-5">{{'Edit'|trans}}</button></a>
+        </div>
+        {% if session.training.platform != 'Formiris' %}
+            <div class='col text-center'>
+                <a href="{{ path('session_tally_sheet', {'id': session.id}) }}"><button class="btn btn-lg btn-no-bg hover-pr rad-rounded-xs px-5">{{'Tally sheet'|trans}}</button></a>
+            </div>
+        {% endif %}
+    </div>
+
+    <h1 class="text-center mb-5">{{ session.training }}</h1>
+
+    <div class='d-flex row mb-5 justify-content-around'>
+    
+        <div class='mb-4'>
+            <div class='info-box-header p-3 text-center'><i class="info-box-icon far fa-calendar-alt fa-2x"></i><label class='h4 px-3'>{{'Schedules'|trans}}</label></div>
+            <div class='info-box-content px-4 py-3 text-center'>
+                <h5 class='mb-3'>Le {{ session.date|date("d/m/Y") }}</h5>
+                <hr>
+                <h5 class="text-center w-100">{{'AM :'|trans}} {{ session.startTimeAm|date("H\\h\i") }}-{{ session.endTimeAm|date("H\\h\i") }}</h5>
+                <h5 class="text-center w-100">{{'PM :'|trans}} {{ session.startTimePm|date("H\\h\i") }}-{{ session.endTimePm|date("H\\h\i") }}</h5>
+                <hr>
+                <h5>{{ session.endTimeAm|date_minus(session.startTimeAm,session.endTimePm,session.startTimePm) }} {{'of training'|trans}}</h5>
+            </div>
+        </div>
+
+        <div class='mb-4'>
+            <div class='info-box-header p-3 text-center'><i class="info-box-icon fas fa-map-marker-alt fa-2x"></i><label class='h4 px-3'>{{'Location'|trans}}</label></div>
+            <div class='info-box-content px-4 py-3 text-center'>
+                {% if session.location %}
+                    {% if session.location.name == null %}
+                        <a href="{{ path('location_edit', {'id': session.location.id, 'source': 'session', 'id_session': session.id}) }}"><h5 class="font-italic text-danger">{{'No location name set for this session'|trans}}</h5></a>
+                    {% else %}
+                        <h5>{{ session.location.name}}</h5>
+                    {% endif %}
+                    {% if session.location.street == null %}
+                        <a href="{{ path('location_edit', {'id': session.location.id, 'source': 'session', 'id_session': session.id}) }}"><h5 class="font-italic text-danger">{{'No location street set for this session'|trans}}</h5></a>
+                    {% else %}
+                        <h5>{{ session.location.street}}</h5>
+                    {% endif %}
+                    <h5>{{ session.location.postalCode}} - {{ session.location.city}}</h5>
+                {% else %}
+                    <a href="{{ path('session_edit', {'id': session.id}) }}"><h5 class="font-italic text-danger">{{'No location set for this session'|trans}}</h5></a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class='mb-4'>
+            <div class='info-box-header p-3 text-center'><i class="info-box-icon fas fa-user-tie fa-2x"></i><label class='h4 px-3'>{{'Instructor'|trans}}</label></div>
+            <div class='info-box-content px-4 py-3 text-center'>
+                {% if session.instructors|length > 0 %}
+                    {% for instructor in session.instructors %}
+                        <a href="{{ path('instructor_show', {'id': instructor.id}) }}"><h5>{{ instructor.lastName }} {{ instructor.firstName }}
+                        {% if instructor.profession %}
+                            ({{ instructor.profession }})</h5>
+                        {% endif %}
+                        </h5></a>
+                        <hr>
+                    {% endfor %}
+                {% else %}
+                    <a href="{{ path('session_edit', {'id': session.id}) }}"><h5 class="font-italic text-danger">{{'No instructor set for this session'|trans}}</h5></a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class='mb-4'>
+            <div class='info-box-header p-3 text-center'><i class="info-box-icon fas fa-hashtag fa-2x"></i><label class='h4 px-3'>{{'Training reference'|trans}}</label></div>
+            <div class='info-box-content px-4 py-3 text-center'>
+                {% if session.training.referenceNumber != null %}
+                    <a href="{{ path('training_show', {'id': session.training.id}) }}"><h5>{{ session.training.referenceNumber }}</h5></a>
+                {% else %}
+                    <a href="{{ path('training_edit', {'id': session.training.id, 'source': 'session', 'id_session': session.id}) }}"><h5 class="font-italic text-danger">{{'No training reference set for this training'|trans}}</h5></a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class='mb-4'>
+            <div class='info-box-header p-3 text-center'><i class="info-box-icon fas fa-bullseye fa-2x"></i><label class='h4 px-3'>{{'Training goals'|trans}}</label></div>
+            <div class='info-box-content px-4 py-3 text-center'>
+                {% if session.training.goals|length > 0 %}
+                    {% for goal in session.training.goals %}
+                        <a href="{{ path('goal_show', {'id': goal.id}) }}"><h5>{{ goal.title }}</h5></a>
+                        <hr>
+                    {% endfor %}
+                {% else %}
+                    <a href="{{ path('training_edit', {'id': session.training.id, 'source': 'session', 'id_session': session.id}) }}"><h5 class="font-italic text-danger">{{'No goal set for this training'|trans}}</h5></a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <a href="/uploads/{{ session.upload.fileName }}">
+        <button class="btn btn-lg btn-no-bg hover-pr rad-rounded-xs px-5 mb-3">{{ session.upload.fileName }} <i class="fas fa-download fa-lg"></i></button>
+    </a>
+    <a href="{{ path('session_all_documents', {'id': session.id}) }}">
+        <button class="btn btn-lg btn-no-bg hover-pr rad-rounded-xs px-5 mb-3">{{'Direct mail'|trans}} <i class="fas fa-file-alt fa-lg"></i></button>
+    </a>
+
+
+    <div class="row text-center tab-header">
+        <div class="col-2 tab-cell-header px-2 py-2">
+            {{'Civility'|trans}}
+        </div>
+        <div class="col-2 tab-cell-header px-2 py-2">
+            {{'Last name'|trans}}
+        </div>
+        <div class="col-2 tab-cell-header px-2 py-2">
+            {{'First name'|trans}}
+        </div>
+        <div class="col-3 tab-cell-header px-2 py-2">
+            {{'Email'|trans}}
+        </div>
+        <div class="col-3 tab-cell-header px-2 py-2">
+            {{'Company'|trans}}
+        </div>
+    </div>
+    {% for trainee in session.trainees %}
+        <div class="row text-center tab-row link-style-disabled">
+            <div class="col-2 tab-cell px-2 py-2">
+                {{ trainee.civility }}
+            </div>
+            <div class="col-2 tab-cell px-2 py-2">
+                {{ trainee.lastName }}
+            </div>
+            <div class="col-2 tab-cell px-2 py-2">
+                {{ trainee.firstName }}
+            </div>
+            <div class="col-3 tab-cell px-2 py-2">
+                {{ trainee.email }}
+            </div>
+            <div class="col-3 tab-cell px-2 py-2">
+                {{ trainee.company.corporateName }}
+            </div>
+        </div>
+    {% else %}
+        <div class='row justify-content-center mt-2'>
+            <div class='col text-center'>
+                <div class="alert alert-danger">{{'No entry found'|trans}}</div>
+            </div>
+        </div>
+    {% endfor %}
+    <div class="mb-5"></div>
+{% endblock %}

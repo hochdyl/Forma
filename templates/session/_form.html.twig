@@ -1,0 +1,116 @@
+{{ form_start(form) }}
+
+    {% if app.request.attributes.get('_route') == 'session_new' %}
+        <div class='row justify-content-center'>
+            <h2 class="text-center mb-5">{{ session.training }}</h2>
+        </div>
+        {{ form_widget(form.training, {'attr': {'class': 'hidden-row mb-3'}}) }}
+    {% else %}
+        <h5>{{'Training'|trans}}</h5>
+        {{ form_errors(form.training) }}
+        {{ form_widget(form.training, {'attr': {'class': 'mb-3'}}) }}
+    {% endif %}
+
+    <h5>{{'Location'|trans}}</h5>
+    {{ form_errors(form.location) }}
+    {{ form_widget(form.location, {'attr': {'class': 'mb-3'}}) }}
+
+    <h5>{{'Instructors'|trans}} 
+    {% if app.request.get('file_name') %}
+        {% if app.request.get('current_session_number') %}
+            <a href="{{ path('instructor_new', {'source': 'session', 'file_name': file_name, 'extension': extension, 'current_session_number': app.request.get('current_session_number') }) }}"><i class="fas fa-plus-circle"></i></a>
+        {% else %}
+            <a href="{{ path('instructor_new', {'source': 'session', 'file_name': file_name, 'extension': extension }) }}"><i class="fas fa-plus-circle"></i></a>
+        {% endif %}
+    {% else %}
+        <a href="{{ path('instructor_new', {'source': 'session', 'id': session.id }) }}"><i class="fas fa-plus-circle"></i></a>
+    {% endif %}
+    </h5>
+    {{ form_errors(form.instructors) }}
+    {{ form_widget(form.instructors, {'attr': {'class': 'mb-3'}}) }}
+
+    <div class='row justify-content-center'>
+        <div class="col-4">
+        <h5>{{'Date'|trans}}</h5>
+            {{ form_errors(form.date) }}
+            {{ form_widget(form.date, {'attr': {'class': 'mb-3'}}) }}
+        </div>
+    </div>
+
+    <div class='row justify-content-center'>
+        <div class="col-2">
+        <h5>{{'AM Time'|trans}}</h5>
+            {{ form_errors(form.start_time_am) }}
+            {{ form_widget(form.start_time_am, {'attr': {'class': 'mb-3'}}) }}
+            {{ form_errors(form.end_time_am) }}
+            {{ form_widget(form.end_time_am, {'attr': {'class': 'mb-3'}}) }}
+        </div>
+        <div class="col-2">
+        <h5>{{'PM Time'|trans}}</h5>
+            {{ form_errors(form.start_time_pm) }}
+            {{ form_widget(form.start_time_pm, {'attr': {'class': 'mb-3'}}) }}
+            {{ form_errors(form.end_time_pm) }}
+            {{ form_widget(form.end_time_pm, {'attr': {'class': 'mb-3'}}) }}
+        </div>
+    </div>
+
+    <h5>{{'Comment'|trans}}</h5>
+    {{ form_errors(form.comment) }}
+    {{ form_widget(form.comment, {'attr': {'class': 'mb-3'}}) }}
+
+    {% if app.request.attributes.get('_route') == 'session_new' %}
+        <h5>{{ session.upload.fileName }}</h5>
+
+        <div class="row text-center tab-header">
+            <div class="col-2 tab-cell-header px-2 py-2">
+                {{'Civility'|trans}}
+            </div>
+            <div class="col-2 tab-cell-header px-2 py-2">
+                {{'Last name'|trans}}
+            </div>
+            <div class="col-2 tab-cell-header px-2 py-2">
+                {{'First name'|trans}}
+            </div>
+            <div class="col-3 tab-cell-header px-2 py-2">
+                {{'Email'|trans}}
+            </div>
+            <div class="col-3 tab-cell-header px-2 py-2">
+                {{'Company'|trans}}
+            </div>
+        </div>
+        {% for trainee in session.trainees %}
+            <div class="row text-center tab-row link-style-disabled">
+                <div class="col-2 tab-cell px-2 py-2">
+                    {{ trainee.civility }}
+                </div>
+                <div class="col-2 tab-cell px-2 py-2">
+                    {{ trainee.lastName }}
+                </div>
+                <div class="col-2 tab-cell px-2 py-2">
+                    {{ trainee.firstName }}
+                </div>
+                <div class="col-3 tab-cell px-2 py-2">
+                    {{ trainee.email }}
+                </div>
+                <div class="col-3 tab-cell px-2 py-2">
+                    {{ trainee.company.corporateName }}
+                </div>
+            </div>
+        {% else %}
+            <div class='row justify-content-center mt-2'>
+                <div class='col text-center'>
+                    <div class="alert alert-danger">{{'No entry found'|trans}}</div>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="mb-5"></div>
+
+    {% endif %}
+
+    <div class='row justify-content-center'>
+        <div class='col text-center'>
+            <button class="btn btn-lg btn-primary rad-rounded-xs px-5">{{ button_label|default('Save'|trans) }}</button>
+        </div>
+    </div>
+
+{{ form_end(form) }}

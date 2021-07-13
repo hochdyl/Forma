@@ -1,0 +1,19 @@
+{{ form_start(form) }}
+    <h5>{{'Last name'|trans}}</h5>
+    {{ form_errors(form.last_name) }}
+    {{ form_widget(form.last_name, {'attr': {'class': 'mb-3'}}) }}
+
+    <h5>{{'First name'|trans}}</h5>
+    {{ form_errors(form.first_name) }}
+    {{ form_widget(form.first_name, {'attr': {'class': 'mb-3'}}) }}
+
+    <h5>{{'Profession'|trans}}</h5>
+    {{ form_errors(form.profession) }}
+    {{ form_widget(form.profession, {'attr': {'class': 'mb-5'}}) }}
+
+    <div class='row justify-content-center'>
+        <div class='col text-center'>
+            <button class="btn btn-lg btn-primary rad-rounded-xs px-5">{{ button_label|default('Save'|trans) }}</button>
+        </div>
+    </div>
+{{ form_end(form) }}

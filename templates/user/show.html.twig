@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{'User'|trans}}{% endblock %}
+
+{% block body %}
+    <a href="{{ path('user_index') }}"><i class="fas fa-chevron-left h1 back-btn"></i></a>
+    
+    <div class='row justify-content-center mb-5'>
+        <div class='col text-center'>
+            <a href="{{ path('user_edit', {'id': user.id}) }}"><button class="btn btn-lg btn-no-bg hover-pr rad-rounded-xs px-5">{{'Edit'|trans}}</button></a>
+        </div>
+    </div>
+
+    <h1 class="text-center mb-5">{{ user.email }}</h1>
+
+    <div class='d-flex row mb-5 justify-content-around'>
+
+        <div class='mb-4'>
+            <div class='info-box-header p-3 text-center'><i class="info-box-icon fas fa-user-tag fa-2x"></i><label class='h4 px-3'>{{'Roles'|trans}}</label></div>
+            <div class='info-box-content px-4 py-3 text-center'>
+                <h5>{{ user.roles ? user.roles|json_encode : '' }}</h5>
+            </div>
+        </div>
+    </div>
+{% endblock %}

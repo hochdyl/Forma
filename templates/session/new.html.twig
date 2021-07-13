@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{'New Session'|trans}}{% endblock %}
+
+{% block body %}
+    <div class="text-center mb-5">
+
+        {% if app.request.get('instructor') == 'success' %}
+            <div class="text-center mx-auto alert alert-success alert-dismissable fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+                <h5>{{'Instructor successfuly added'|trans}}</h5>
+            </div>
+        {% endif %}
+
+        <h1>{{'Create new Session'|trans}}</h1>
+        <div class='row justify-content-center'>
+            <h5 class='border-rounded py-2 px-4'>{{ platform_name }}</h5>
+            {% if platform_name == 'Formiris' %}
+                {% if app.request.get('current_session_number') %}
+                    <h5 class='w-100'>{{'Session'|trans}} {{ app.request.get('current_session_number')|session_display(app.request.get('current_session_number')) }}/{{ total_sessions_number }}</h5>
+                {% else %}
+                    <h5 class='w-100'>{{'Session'|trans}} 1/{{ total_sessions_number }}</h5>
+                {% endif %}
+
+            {% endif %}
+            {% if platform_name == 'Opcalia' %}
+                <h5 class='w-100'>{{'Session'|trans}} 1/1</h5>
+            {% endif %}
+        </div>
+    </div>
+
+    {{ include('session/_form.html.twig') }}
+
+    </div>
+
+{% endblock %}
